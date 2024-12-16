@@ -1,0 +1,6 @@
+export const db = "main-codeExchange"
+export const questionCollection = "questions"
+export const answerCollection = "answers"
+export const commentCollection = "comments"
+export const voteCollection = "votes"
+export const attachementBucket = "attachements"
