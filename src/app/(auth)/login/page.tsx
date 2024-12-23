@@ -9,6 +9,9 @@ import { useAuthStore } from "@/store/Auth";
 import Link from "next/link";
 
 
+
+
+
 const BottomGradient = () => {
   return (
       <>
@@ -29,9 +32,12 @@ const LabelInputContainer = ({
 };
 
 function LoginPage() {
-    const { login } = useAuthStore();
+    const { login, githubLogin, googleLogin } = useAuthStore();
     const [isLoading, setIsLoading] = React.useState(false);
     const [error, setError] = React.useState("");
+
+    
+    
 
     const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -78,7 +84,7 @@ function LoginPage() {
       <LabelInputContainer className="mb-4">
                     <Label htmlFor="email">Email Address</Label>
                     <Input
-                    className="text-black"
+                    
                         id="email"
                         name="email"
                         placeholder="projectmayhem@fc.com"
@@ -87,7 +93,7 @@ function LoginPage() {
        </LabelInputContainer>
        <LabelInputContainer className="mb-4">
                     <Label htmlFor="password">Password</Label>
-                    <Input className="text-black" id="password" name="password" placeholder="••••••••" type="password" />
+                    <Input  id="password" name="password" placeholder="••••••••" type="password" />
         </LabelInputContainer>
 
     
@@ -107,6 +113,8 @@ function LoginPage() {
             <button  className="group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]" 
              type="button"
              disabled={isLoading}
+             onClick={googleLogin}
+            
              >
                 <IconBrandGoogle className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
                 <span className="text-sm text-neutral-700 dark:text-neutral-300">
@@ -119,6 +127,7 @@ function LoginPage() {
                         className="group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
                         type="button"
                         disabled={isLoading}
+                        onClick={githubLogin}
                     >
                         <IconBrandGithub className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
                         <span className="text-sm text-neutral-700 dark:text-neutral-300">

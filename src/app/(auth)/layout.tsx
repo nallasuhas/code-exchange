@@ -23,7 +23,7 @@ const Layout = ({children}: {children: React.ReactNode}) => {
       // if user is not logged in return the children i.e, login and register pages
     return (
         <BackgroundLines> 
-            <div className="relative flex min-h-screen flex-col items-center justify-center py-12">
+            <div className="relative flex min-h-screen flex-col items-center justify-center py-12 mt-16">
             
             <div className="relative">{children}</div>
            </div>

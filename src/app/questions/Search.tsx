@@ -8,17 +8,24 @@ const Search = () => {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const router = useRouter();
-    const [search, setSearch] = React.useState(searchParams.get("search") || "");
+    
+    // Create a default search param value
+    const defaultSearchValue = searchParams ? searchParams.get("search") : "";
+    const [search, setSearch] = React.useState(defaultSearchValue || "");
 
     React.useEffect(() => {
-        setSearch(() => searchParams.get("search") || "");
+        if (searchParams) {
+            setSearch(searchParams.get("search") || "");
+        }
     }, [searchParams]);
 
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const newSearchParams = new URLSearchParams(searchParams);
-        newSearchParams.set("search", search);
-        router.push(`${pathname}?${newSearchParams}`);
+        if (searchParams) {
+            const newSearchParams = new URLSearchParams(searchParams.toString());
+            newSearchParams.set("search", search);
+            router.push(`${pathname}?${newSearchParams}`);
+        }
     };
 
     return (

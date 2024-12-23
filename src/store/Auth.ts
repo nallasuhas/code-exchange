@@ -3,6 +3,7 @@ import { immer } from "zustand/middleware/immer";
 import { persist } from "zustand/middleware";
 import { AppwriteException, ID, Models } from "appwrite";
 import { account } from "@/models/client/config";
+import { OAuthProvider } from "appwrite";
 
 export interface UserPrefs {
   reputation: number;
@@ -15,6 +16,8 @@ interface IAuthStore {
   hydrated: boolean;
   setHydrated: () => void;
   verfiySession: () => Promise<void>;
+  githubLogin: () => Promise<{ success: boolean; error?: AppwriteException | null }>;
+  googleLogin: () => Promise<{ success: boolean; error?: AppwriteException | null }>;
   login: (
     email: string,
     password: string
@@ -51,6 +54,70 @@ export const useAuthStore = create<IAuthStore>()(
           console.log(error);
         }
       },
+      async githubLogin(){
+        try{
+           await account.createOAuth2Session(
+                OAuthProvider.Github, // provider
+                'http://localhost:3000/', // redirect here on success
+                'http://localhost:3000/login', // redirect here on failure
+                 // scopes (optional)
+            );
+            const session = await account.getSession("current");
+            const user = await account.get<UserPrefs>()
+            if (!user.prefs?.reputation) {
+              await account.updatePrefs<UserPrefs>({
+                reputation: 0,
+              });
+            }
+            set((state) => {
+              state.session = session;
+              state.user = user;
+              
+            });
+   
+          return { success: true };
+
+        }catch(error){
+          console.log(error);
+          return {
+            success: false,
+            error: error instanceof AppwriteException ? error : null,
+          };
+        }
+      },
+      async googleLogin(){
+        try{
+          await account.createOAuth2Session(
+            OAuthProvider.Github, // provider
+            'http://localhost:3000/', // redirect here on success
+            'http://localhost:3000/login', // redirect here on failure
+             // scopes (optional)
+        );
+        const session = await account.getSession("current");
+        const user = await account.get<UserPrefs>()
+        if (!user.prefs?.reputation) {
+          await account.updatePrefs<UserPrefs>({
+            reputation: 0,
+          });
+        }
+        set((state) => {
+          state.session = session;
+          state.user = user;
+          
+        });
+
+      return { success: true }; 
+        }catch(error){
+          console.log(error);
+          return {
+            success: false,
+            error: error instanceof AppwriteException ? error : null,
+          };
+        }
+        
+       
+       },
+
 
       async login(email, password) {
         try {

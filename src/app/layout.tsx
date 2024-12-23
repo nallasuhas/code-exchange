@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/modetoggle";
+import Header from "./components/Header";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -21,7 +22,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body 
         className={cn(
-          "min-h-screen bg-background font-sans antialiased relative",
+          "min-h-screen bg-background font-sans antialiased relative dark:bg-black dark:text-white",
           inter.className
         )}
         suppressHydrationWarning
@@ -33,6 +34,7 @@ export default function RootLayout({
           disableTransitionOnChange
           storageKey="theme-preference"
         >
+          <Header />
           
           <span className="fixed top-4 right-4 z-50 ">
                <ModeToggle />
