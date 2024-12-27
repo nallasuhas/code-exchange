@@ -22,6 +22,8 @@ const Page = async ({
 }: {
     searchParams: { page?: string; tag?: string; search?: string };
 }) => {
+    const {page, tag, search} = await searchParams
+    searchParams = {page, tag, search}
     // Safely handle the page parameter
     const currentPage = searchParams?.page || "1";
     

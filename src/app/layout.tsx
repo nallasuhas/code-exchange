@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/modetoggle";
 import Header from "./components/Header";
 import { cn } from "@/lib/utils";
+import Footer from "./components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -41,7 +42,7 @@ export default function RootLayout({
             </span>
             {children}
         
-          
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

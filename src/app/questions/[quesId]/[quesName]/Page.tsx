@@ -26,28 +26,30 @@ import DeleteQuestion from "./DeleteQuestion";
 import EditQuestion from "./EditQuestion";
 import { TracingBeam } from "@/components/ui/tracing-beam";
 
-const Page = async ({ params }: { params: { quesId: string; quesName: string } }) => {
+const page = async ({ params }: { params: { quesId: string; quesName: string } }) => {
+    const {quesId, quesName} = await params
+    params = {quesId, quesName}
     const [question, answers, upvotes, downvotes, comments] = await Promise.all([
-        databases.getDocument(db, questionCollection, params.quesId),
+        databases.getDocument(db, questionCollection, quesId),
         databases.listDocuments(db, answerCollection, [
             Query.orderDesc("$createdAt"),
-            Query.equal("questionId", params.quesId),
+            Query.equal("questionId", quesId),
         ]),
         databases.listDocuments(db, voteCollection, [
-            Query.equal("typeId", params.quesId),
+            Query.equal("typeId", quesId),
             Query.equal("type", "question"),
             Query.equal("voteStatus", "upvoted"),
             Query.limit(1), // for optimization
         ]),
         databases.listDocuments(db, voteCollection, [
-            Query.equal("typeId", params.quesId),
+            Query.equal("typeId", quesId),
             Query.equal("type", "question"),
             Query.equal("voteStatus", "downvoted"),
             Query.limit(1), // for optimization
         ]),
         databases.listDocuments(db, commentCollection, [
             Query.equal("type", "question"),
-            Query.equal("typeId", params.quesId),
+            Query.equal("typeId", quesId),
             Query.orderDesc("$createdAt"),
         ]),
     ]);
@@ -220,4 +222,4 @@ const Page = async ({ params }: { params: { quesId: string; quesName: string } }
     );
 };
 
-export default Page;
+export default page;
