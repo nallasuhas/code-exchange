@@ -14,18 +14,20 @@ export default function Home() {
       className: "text-blue-500 dark:text-blue-500",
      }]
   return (
-   <>
+   <div >
    <div className="flex flex-col items-center gap-3 justify-center h-[40rem]  ">
     <SparklesText text="CodeXchange"/>
    <TypewriterEffect words={words} />
    </div>
 
-   <div className="flex flex-col items-center my-4">
-    <p>Latest questions</p>
+   <div className="flex flex-col items-center my-4 gap-3 ">
+    <p className="text-xl">Latest questions</p>
    <LatestQuestions />
    </div>
-  
+   <div className="pointer-events-none">
    <BackgroundBeams />
-   </>
+   </div>
+   
+   </div>
   );
 }

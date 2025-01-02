@@ -40,7 +40,7 @@ const Footer = () => {
             <div className="mt-4 text-center">&copy; {new Date().getFullYear()} CodeXchange</div>
         </div>
         <FlickeringGrid
-        className="absolute inset-0 size-full"
+        className="absolute inset-0 size-full pointer-events-none"
         squareSize={4}
         gridGap={6}
         color="#60A5FA"
