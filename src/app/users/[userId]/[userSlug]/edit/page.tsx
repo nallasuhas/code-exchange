@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import React from "react";
 
-const Page = async ({ params }: { params: Promise<{ userId: string; userSlug: string }> }) => {
-    const { userId } = await params;
+const Page = async ({ params }: { params: { userId: string; userSlug: string } }) => {
+    const { userId } = params;
     // Fetch user data from Appwrite
     const user = await users.get<UserPrefs>(userId);
 

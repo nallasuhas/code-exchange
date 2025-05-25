@@ -19,12 +19,11 @@ const Page = async ({
     params,
     searchParams,
 }: {
-    params: Promise<{ userId: string; userSlug: string }>;
-    searchParams: Promise<{ page?: string; voteStatus?: "upvoted" | "downvoted" }>;
+    params: { userId: string; userSlug: string };
+    searchParams: { page?: string; voteStatus?: "upvoted" | "downvoted" };
 }) => {
-  // Fix: Await params and searchParams as required by Next.js dynamic route API
-  const { userId, userSlug } = await params;
-  let { page, voteStatus } = await searchParams;
+  const { userId, userSlug } = params;
+  let { page, voteStatus } = searchParams;
   page ||= "1";
 
     const query = [

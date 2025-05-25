@@ -27,8 +27,7 @@ import EditQuestion from "./EditQuestion";
 import { TracingBeam } from "@/components/ui/tracing-beam";
 
 const page = async ({ params }: { params: { quesId: string; quesName: string } }) => {
-    const {quesId, quesName} = await params
-    params = {quesId, quesName}
+    const { quesId, quesName } = params;
     const [question, answers, upvotes, downvotes, comments] = await Promise.all([
         databases.getDocument(db, questionCollection, quesId),
         databases.listDocuments(db, answerCollection, [
