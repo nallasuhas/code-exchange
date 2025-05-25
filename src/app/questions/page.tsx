@@ -17,15 +17,10 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 
-const Page = async ({
-    searchParams,
-}: {
-    searchParams: { page?: string; tag?: string; search?: string };
-}) => {
-    const {page, tag, search} = await searchParams
-    searchParams = {page, tag, search}
+const Page = async ({ searchParams }: { searchParams: Promise<{ page?: string; tag?: string; search?: string }> }) => {
+    const {page, tag, search} = await searchParams;
     // Safely handle the page parameter
-    const currentPage = searchParams?.page || "1";
+    const currentPage = page || "1";
     
     const queries = [
         Query.orderDesc("$createdAt"),
@@ -33,15 +28,15 @@ const Page = async ({
         Query.limit(25),
     ];
 
-    if (searchParams?.tag) {
-        queries.push(Query.equal("tags", searchParams.tag));
+    if (tag) {
+        queries.push(Query.equal("tags", tag));
     }
 
-    if (searchParams?.search) {
+    if (search) {
         queries.push(
             Query.or([
-                Query.search("title", searchParams.search),
-                Query.search("content", searchParams.search),
+                Query.search("title", search),
+                Query.search("content", search),
             ])
         );
     }
@@ -84,8 +79,8 @@ const Page = async ({
     const buildPaginationUrl = (pageNum: number) => {
         const params = new URLSearchParams();
         params.set('page', pageNum.toString());
-        if (searchParams?.tag) params.set('tag', searchParams.tag);
-        if (searchParams?.search) params.set('search', searchParams.search);
+        if (tag) params.set('tag', tag);
+        if (search) params.set('search', search);
         return `?${params.toString()}`;
     };
 

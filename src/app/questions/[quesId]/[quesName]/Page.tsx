@@ -26,8 +26,8 @@ import DeleteQuestion from "./DeleteQuestion";
 import EditQuestion from "./EditQuestion";
 import { TracingBeam } from "@/components/ui/tracing-beam";
 
-const page = async ({ params }: { params: { quesId: string; quesName: string } }) => {
-    const { quesId } = params;
+const page = async ({ params }: { params: Promise<{ quesId: string; quesName: string }> }) => {
+    const { quesId } = await params;
     const [question, answers, upvotes, downvotes, comments] = await Promise.all([
         databases.getDocument(db, questionCollection, quesId),
         databases.listDocuments(db, answerCollection, [
@@ -51,7 +51,7 @@ const page = async ({ params }: { params: { quesId: string; quesName: string } }
             Query.equal("typeId", quesId),
             Query.orderDesc("$createdAt"),
         ]),
-    ]);
+]);
 
     // since it is dependent on the question, we fetch it here outside of the Promise.all
     const author = await users.get<UserPrefs>(question.authorId);
