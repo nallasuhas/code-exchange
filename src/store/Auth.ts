@@ -68,7 +68,7 @@ export const useAuthStore = create<IAuthStore>()(
         try{
            const baseUrl = env.appwrite.endpoint.includes('localhost') 
              ? 'http://localhost:3000'
-             : env.appwrite.endpoint;
+             : process.env.NEXT_PUBLIC_APP_URL || 'https://your-production-domain.com';
            
            await account.createOAuth2Session(
                 OAuthProvider.Github,
@@ -104,7 +104,7 @@ export const useAuthStore = create<IAuthStore>()(
         try{
           const baseUrl = env.appwrite.endpoint.includes('localhost')
             ? 'http://localhost:3000'
-            : env.appwrite.endpoint;
+            : process.env.NEXT_PUBLIC_APP_URL || 'https://your-production-domain.com';
           
           const successUrl = `${baseUrl}/`;
           const failureUrl = `${baseUrl}/login`;
