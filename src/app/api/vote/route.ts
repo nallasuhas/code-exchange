@@ -1,4 +1,3 @@
-
 import { db, voteCollection, questionCollection, answerCollection } from "@/models/name";
 import { databases, users } from "@/models/server/config";
 import { UserPrefs } from "@/store/Auth";
@@ -76,15 +75,13 @@ export async function POST(request: NextRequest){
                     Query.equal("type", type),
                     Query.equal("typeId", typeId),
                     Query.equal("voteStatus", "upvoted"),
-                    Query.equal("votedById", votedById),
-                    Query.limit(1), // for optimization as we only need total
+                    Query.limit(1000), // get all upvotes
                 ]), 
                 databases.listDocuments(db, voteCollection, [
                     Query.equal("type", type),
                     Query.equal("typeId", typeId),
                     Query.equal("voteStatus", "downvoted"),
-                    Query.equal("votedById", votedById),
-                    Query.limit(1), // for optimization as we only need total
+                    Query.limit(1000), // get all downvotes
                 ]),
             ])
 
@@ -105,15 +102,13 @@ export async function POST(request: NextRequest){
                 Query.equal("type", type),
                 Query.equal("typeId", typeId),
                 Query.equal("voteStatus", "upvoted"),
-                Query.equal("votedById", votedById),
-                Query.limit(1), // for optimization as we only need total
+                Query.limit(1000), // get all upvotes
             ]),
             databases.listDocuments(db, voteCollection, [
                 Query.equal("type", type),
                 Query.equal("typeId", typeId),
                 Query.equal("voteStatus", "downvoted"),
-                Query.equal("votedById", votedById),
-                Query.limit(1), // for optimization as we only need total
+                Query.limit(1000), // get all downvotes
             ]),
         ]);
 

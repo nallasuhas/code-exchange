@@ -6,6 +6,7 @@ import { ModeToggle } from "@/components/modetoggle";
 import Header from "./components/Header";
 import { cn } from "@/lib/utils";
 import Footer from "./components/Footer";
+import AppInitializer from "./AppInitializer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,6 +36,7 @@ export default function RootLayout({
           disableTransitionOnChange
           storageKey="theme-preference"
         >
+          <AppInitializer />
           <Header />
           
           <span className="fixed top-4 right-4 z-50 ">

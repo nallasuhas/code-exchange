@@ -1,4 +1,3 @@
-
 import { MarkdownPreview } from "@/components/RTE";
 import { answerCollection, db, questionCollection } from "@/models/name";
 import { databases } from "@/models/server/config";
@@ -23,9 +22,10 @@ const Page = async ({
     params: { userId: string; userSlug: string };
     searchParams: { page?: string };
 }) => {
-  const {userId, userSlug} =  await params
-  let {page} =  await searchParams
-    page ||= "1";
+  // Fix: Remove unnecessary await from params and searchParams
+  const { userId, userSlug } = params;
+  let { page } = searchParams;
+  page ||= "1";
 
     const queries = [
         Query.equal("authorId", userId),
@@ -45,13 +45,21 @@ const Page = async ({
         })
     );
 
+    // Pagination logic
+    const pageSize = 25;
+    const totalPages = Math.ceil(answers.total / pageSize);
+    const currentPage = +page;
+
     return (
         <div className="px-4">
             <div className="mb-4">
                 <p>{answers.total} answers</p>
             </div>
             <div className="mb-4 max-w-3xl space-y-6">
-                {answers.documents.map(ans => (
+                {answers.documents.length === 0 ? (
+                  <div className="text-gray-500">No answers found.</div>
+                ) : (
+                  answers.documents.map(ans => (
                     <div key={ans.$id}>
                         <div className="max-h-40 overflow-auto">
                             <MarkdownPreview source={ans.content} className="rounded-lg p-4" />
@@ -63,32 +71,35 @@ const Page = async ({
                             Question
                         </Link>
                     </div>
-                ))}
+                  ))
+                )}
             </div>
             <Pagination>
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious href="#" />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#" isActive>1</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#" >
-            2
-          </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">3</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationEllipsis />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationNext href="#" />
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href={`?page=${Math.max(1, currentPage - 1)}`}
+                    aria-disabled={currentPage === 1}
+                  />
+                </PaginationItem>
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <PaginationItem key={i + 1}>
+                    <PaginationLink
+                      href={`?page=${i + 1}`}
+                      isActive={currentPage === i + 1}
+                    >
+                      {i + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                <PaginationItem>
+                  <PaginationNext
+                    href={`?page=${Math.min(totalPages, currentPage + 1)}`}
+                    aria-disabled={currentPage === totalPages}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
         </div>
     );
 };

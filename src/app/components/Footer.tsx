@@ -28,7 +28,7 @@ const Footer = () => {
     ];
 
     return (
-        <footer className="relative block overflow-hidden border-t border-solid border-white/30 py-20">
+        <footer className="relative block overflow-hidden border-t border-solid border-white/30 py-20 mt-4">
         <div className="container mx-auto px-4">
             <ul className="flex flex-wrap items-center justify-center gap-3">
                 {items.map(item => (

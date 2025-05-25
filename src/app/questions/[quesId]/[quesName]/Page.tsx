@@ -164,18 +164,15 @@ const page = async ({ params }: { params: { quesId: string; quesName: string } }
                     </div>
                     <div className="w-full overflow-auto">
                         <MarkdownPreview className="rounded-xl p-4" source={question.content} />
-                        <picture>
-                            <img
-                                src={
-                                    storage.getFilePreview(
-                                         attachementBucket,
-                                        question.attachmentId
-                                    )
-                                }
-                                alt={question.title}
-                                className="mt-3 rounded-lg"
-                            />
-                        </picture>
+                        {question.attachmentId && (
+                            <picture>
+                                <img
+                                    src={typeof storage.getFilePreview === 'function' ? storage.getFilePreview(attachementBucket, question.attachmentId).toString() : ''}
+                                    alt={question.title}
+                                    className="mt-3 rounded-lg"
+                                />
+                            </picture>
+                        )}
                         <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
                             {question.tags.map((tag: string) => (
                                 <Link

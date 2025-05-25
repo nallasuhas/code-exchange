@@ -85,20 +85,22 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
     };
 
     const create = async () => {
-        if (!formData.attachment) throw new Error("Please upload an image");
-
-        const storageResponse = await storage.createFile(
-            attachementBucket,
-            ID.unique(),
-            formData.attachment
-        );
+        let attachmentId: string | undefined = undefined;
+        if (formData.attachment) {
+            const storageResponse = await storage.createFile(
+                attachementBucket,
+                ID.unique(),
+                formData.attachment
+            );
+            attachmentId = storageResponse.$id;
+        }
 
         const response = await databases.createDocument(db, questionCollection, ID.unique(), {
             title: formData.title,
             content: formData.content,
             authorId: formData.authorId,
             tags: Array.from(formData.tags),
-            attachmentId: storageResponse.$id,
+            ...(attachmentId ? { attachmentId } : {}),
         });
 
         loadConfetti();
@@ -226,8 +228,7 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
                     Tags
                     <br />
                     <small>
-                        Add tags to describe what your question is about. Start typing to see
-                        suggestions.
+                        Add tags to describe what your question is about.
                     </small>
                 </Label>
                 <div className="flex w-full gap-4">
