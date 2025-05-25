@@ -9,9 +9,8 @@ import { databases } from "./config";
 export default async function getOrCreateDB(){
   try {
     await databases.get(db)
-  
     console.log("Database connection")
-  } catch (error) {
+  } catch {
     try {
       await databases.create(db, db)
       console.log("database created")
@@ -21,13 +20,10 @@ export default async function getOrCreateDB(){
         createAnswerCollection(),
         createCommentCollection(),
         createVoteCollection(),
-
       ])
-    
-    } catch (error) {
-      console.log("Error creating databases or collection", error)
+    } catch (err) {
+      console.log("Error creating databases or collection", err)
     }
   }
-
   return databases
 }
