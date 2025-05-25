@@ -18,11 +18,11 @@ const Page = async ({
     params,
     searchParams,
 }: {
-    params: { userId: string };
-    searchParams: { page?: string };
+    params: Promise<{ userId: string }>;
+    searchParams: Promise<{ page?: string }>;
 }) => {
-  const { userId } = params;
-  let { page } = searchParams;
+  const { userId } = await params;
+  let { page } = await searchParams;
   page ||= "1";
 
     const queries = [
