@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 import { AppwriteException, ID, Models } from "appwrite";
 import { account } from "@/models/client/config";
 import { OAuthProvider } from "appwrite";
+import env from "@/app/env";
 
 export interface UserPrefs {
   reputation: number;
@@ -53,69 +54,80 @@ export const useAuthStore = create<IAuthStore>()(
             state.user = user;
           });
         } catch (error) {
-          console.log(error);
+          console.error("Session verification failed:", error);
+          // Clear invalid session
+          set((state) => {
+            state.session = null;
+            state.user = null;
+            state.jwt = null;
+          });
         }
       },
+
       async githubLogin(){
         try{
+           const baseUrl = env.appwrite.endpoint.includes('localhost') 
+             ? 'http://localhost:3000'
+             : env.appwrite.endpoint;
+           
            await account.createOAuth2Session(
-                OAuthProvider.Github, // provider
-                'http://localhost:3000/', // redirect here on success
-                'http://localhost:3000/login', // redirect here on failure
-                 // scopes (optional)
-            );
+                OAuthProvider.Github,
+                `${baseUrl}/`,
+                `${baseUrl}/login`,
+           );
             const session = await account.getSession("current");
-            const user = await account.get<UserPrefs>()
+            const user = await account.get<UserPrefs>();
+            
             if (!user.prefs?.reputation) {
               await account.updatePrefs<UserPrefs>({
                 reputation: 0,
               });
             }
+            
             set((state) => {
               state.session = session;
               state.user = user;
-              
             });
    
-          return { success: true };
+            return { success: true };
 
         }catch(error){
-          console.log(error);
+          console.error("GitHub login failed:", error);
           return {
             success: false,
             error: error instanceof AppwriteException ? error : null,
           };
         }
       },
+
       async googleLogin(){
         try{
-          const successUrl = 'http://localhost:3000/';
-          const failureUrl = 'http://localhost:3000/login';
+          const baseUrl = env.appwrite.endpoint.includes('localhost')
+            ? 'http://localhost:3000'
+            : env.appwrite.endpoint;
           
-          // Start OAuth flow
+          const successUrl = `${baseUrl}/`;
+          const failureUrl = `${baseUrl}/login`;
+          
           await account.createOAuth2Session(
             OAuthProvider.Google,
             successUrl,
             failureUrl
           );
 
-          // Only proceed if we have a valid session
           const session = await account.getSession("current");
           if (!session) {
             throw new Error("No valid session found after OAuth flow");
           }
 
-          // Get user data
           const user = await account.get<UserPrefs>();
           
-          // Initialize user preferences if needed
           if (!user.prefs?.reputation) {
             await account.updatePrefs<UserPrefs>({
               reputation: 0,
             });
           }
 
-          // Update state
           set((state) => {
             state.session = session;
             state.user = user;
@@ -130,7 +142,6 @@ export const useAuthStore = create<IAuthStore>()(
           };
         }
       },
-
 
       async login(email, password) {
         try {
@@ -157,7 +168,7 @@ export const useAuthStore = create<IAuthStore>()(
 
           return { success: true };
         } catch (error) {
-          console.log(error);
+          console.error("Login failed:", error);
           return {
             success: false,
             error: error instanceof AppwriteException ? error : null,
@@ -170,7 +181,7 @@ export const useAuthStore = create<IAuthStore>()(
           await account.create(ID.unique(), email, password, name);
           return { success: true };
         } catch (error) {
-          console.log(error);
+          console.error("Account creation failed:", error);
           return {
             success: false,
             error: error instanceof AppwriteException ? error : null,
@@ -187,7 +198,13 @@ export const useAuthStore = create<IAuthStore>()(
             state.user = null;
           });
         } catch (error) {
-          console.log(error);
+          console.error("Logout failed:", error);
+          // Still clear the state even if the server request fails
+          set((state) => {
+            state.session = null;
+            state.jwt = null;
+            state.user = null;
+          });
         }
       },
     })),
