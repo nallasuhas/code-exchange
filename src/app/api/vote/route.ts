@@ -127,10 +127,20 @@ export async function POST(request: NextRequest){
         
 
 
-    }catch(error: any){
+    }catch(error: unknown){
+        let message = "An error occurred";
+        let status = 500;
+
+        if (typeof error === "object" && error !== null) {
+            const err = error as { message?: string; status?: number; code?: number };
+            if (err.message) message = err.message;
+            if (err.status) status = err.status;
+            else if (err.code) status = err.code;
+        }
+
         return NextResponse.json(
-            { message: error?.message  },
-            { status: error?.status || error?.code || 500 }
+            { message },
+            { status }
         );
     }
 

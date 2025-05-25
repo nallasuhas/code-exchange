@@ -43,8 +43,8 @@ const Comments = ({
                 total: prev.total + 1,
                 documents: [{ ...response, author: user }, ...prev.documents],
             }));
-        } catch (error: any) {
-            window.alert(error?.message || "Error creating comment");
+        } catch (error: unknown) {
+            window.alert(error instanceof Error ? error.message : "Something went wrong");
         }
     };
 
@@ -56,8 +56,8 @@ const Comments = ({
                 total: prev.total - 1,
                 documents: prev.documents.filter(comment => comment.$id !== commentId),
             }));
-        } catch (error: any) {
-            window.alert(error?.message || "Error deleting comment");
+        } catch (error: unknown) {
+            window.alert(error instanceof Error ? error.message : "Something went wrong");
         }
     };
 

@@ -27,13 +27,14 @@ export async function POST(request: NextRequest){
         let message = "Error creating answer";
         let status = 500;
         if (typeof error === "object" && error !== null) {
-          if ("message" in error && typeof (error as any).message === "string") {
-            message = (error as any).message;
+          const err = error as { message?: string; status?: number; code?: number };
+          if (err.message) {
+            message = err.message;
           }
-          if ("status" in error && typeof (error as any).status === "number") {
-            status = (error as any).status;
-          } else if ("code" in error && typeof (error as any).code === "number") {
-            status = (error as any).code;
+          if (err.status) {
+            status = err.status;
+          } else if (err.code) {
+            status = err.code;
           }
         }
         return NextResponse.json({ error: message }, { status });
@@ -65,13 +66,14 @@ export async function DELETE(request: NextRequest){
       let message = "Error deleting the answer";
       let status = 500;
       if (typeof error === "object" && error !== null) {
-        if ("message" in error && typeof (error as any).message === "string") {
-          message = (error as any).message;
+        const err = error as { message?: string; status?: number; code?: number };
+        if (err.message) {
+          message = err.message;
         }
-        if ("status" in error && typeof (error as any).status === "number") {
-          status = (error as any).status;
-        } else if ("code" in error && typeof (error as any).code === "number") {
-          status = (error as any).code;
+        if (err.status) {
+          status = err.status;
+        } else if (err.code) {
+          status = err.code;
         }
       }
       return NextResponse.json(

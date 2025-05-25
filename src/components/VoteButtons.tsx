@@ -4,7 +4,7 @@ import { db, voteCollection } from "@/models/name";
 import { useAuthStore } from "@/store/Auth";
 import { cn } from "@/lib/utils";
 import { IconCaretUpFilled, IconCaretDownFilled } from "@tabler/icons-react";
-import { ID, Models, Query } from "appwrite";
+import { Query, Models } from "appwrite";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -62,8 +62,8 @@ const VoteButtons = ({
 
             setVoteResult(() => data.data.voteResult);
             setVotedDocument(() => data.data.document);
-        } catch (error: any) {
-            window.alert(error?.message || "Something went wrong");
+        } catch (error: unknown) {
+            window.alert(error instanceof Error ? error.message : "Something went wrong");
         }
     };
     
@@ -89,8 +89,8 @@ const VoteButtons = ({
 
             setVoteResult(() => data.data.voteResult);
             setVotedDocument(() => data.data.document);
-        } catch (error: any) {
-            window.alert(error?.message || "Something went wrong");
+        } catch (error: unknown) {
+            window.alert(error instanceof Error ? error.message : "Something went wrong");
         }
     };
 

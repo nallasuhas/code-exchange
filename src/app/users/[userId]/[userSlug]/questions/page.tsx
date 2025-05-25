@@ -7,23 +7,20 @@ import React from "react";
 import {
     Pagination,
     PaginationContent,
-    PaginationEllipsis,
     PaginationItem,
     PaginationLink,
     PaginationNext,
     PaginationPrevious,
   } from "@/components/ui/pagination"
 
-
 const Page = async ({
     params,
     searchParams,
 }: {
-    params: { userId: string; userSlug: string };
+    params: { userId: string };
     searchParams: { page?: string };
 }) => {
-  // Fix: Remove unnecessary await from params and searchParams
-  const { userId, userSlug } = params;
+  const { userId } = params;
   let { page } = searchParams;
   page ||= "1";
 

@@ -14,7 +14,7 @@ const AskQuestion = () => {
         if (!user) {
             router.push('/login');
         }
-    }, [user]);
+    }, [user, router]);
 
     if (!user) return null;
 

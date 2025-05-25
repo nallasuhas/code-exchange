@@ -1,15 +1,14 @@
 "use client";
-import { ID, Models } from "appwrite";
 import React from "react";
 import VoteButtons from "./VoteButtons";
 import { useAuthStore } from "@/store/Auth";
-import { avatars, databases } from "@/models/client/config";
-import { answerCollection, db } from "@/models/name";
+import { avatars } from "@/models/client/config";
 import RTE, { MarkdownPreview } from "./RTE";
 import slugify from "@/utils/slugify"
 import Link from "next/link";
 import { IconTrash } from "@tabler/icons-react";
 import Comments from "./Comments";
+import { Models } from "appwrite";
 
 const Answers = ({
     answers: _answers,
@@ -54,8 +53,8 @@ const Answers = ({
                     ...prev.documents,
                 ],
             }));
-        } catch (error: any) {
-            window.alert(error?.message || "Error creating answer");
+        } catch (error: unknown) {
+            window.alert(error instanceof Error ? error.message : "Something went wrong");
         }
     };
 
@@ -76,8 +75,8 @@ const Answers = ({
                 total: prev.total - 1,
                 documents: prev.documents.filter(answer => answer.$id !== answerId),
             }));
-        } catch (error: any) {
-            window.alert(error?.message || "Error deleting answer");
+        } catch (error: unknown) {
+            window.alert(error instanceof Error ? error.message : "Something went wrong");
         }
     };
 
