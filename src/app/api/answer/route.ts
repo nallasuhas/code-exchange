@@ -23,11 +23,21 @@ export async function POST(request: NextRequest){
             status: 201
           })
 
-    }catch(error: any){
-        return NextResponse.json({ error: error?.message || "Error creating answer" }, { status: error?.status || error?.code || 500})
-
+    }catch(error: unknown){
+        let message = "Error creating answer";
+        let status = 500;
+        if (typeof error === "object" && error !== null) {
+          if ("message" in error && typeof (error as any).message === "string") {
+            message = (error as any).message;
+          }
+          if ("status" in error && typeof (error as any).status === "number") {
+            status = (error as any).status;
+          } else if ("code" in error && typeof (error as any).code === "number") {
+            status = (error as any).code;
+          }
+        }
+        return NextResponse.json({ error: message }, { status });
     }
-    
 }
 
 export async function DELETE(request: NextRequest){
@@ -51,13 +61,25 @@ export async function DELETE(request: NextRequest){
   
   
   
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let message = "Error deleting the answer";
+      let status = 500;
+      if (typeof error === "object" && error !== null) {
+        if ("message" in error && typeof (error as any).message === "string") {
+          message = (error as any).message;
+        }
+        if ("status" in error && typeof (error as any).status === "number") {
+          status = (error as any).status;
+        } else if ("code" in error && typeof (error as any).code === "number") {
+          status = (error as any).code;
+        }
+      }
       return NextResponse.json(
         {
-          message: error?.message || "Error deleting the answer"
+          message
         },
         {
-          status: error?.status || error?.code || 500
+          status
         }
       )
     }

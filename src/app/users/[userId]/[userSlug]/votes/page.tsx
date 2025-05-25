@@ -23,8 +23,8 @@ const Page = async ({
     searchParams: { page?: string; voteStatus?: "upvoted" | "downvoted" };
 }) => {
   const { userId, userSlug } = params;
-  let { page, voteStatus } = searchParams;
-  page ||= "1";
+  const { page: pageParam, voteStatus: voteStatusParam } = searchParams;
+  const page = pageParam || "1";
 
     const query = [
         Query.equal("votedById", userId),
@@ -33,7 +33,7 @@ const Page = async ({
         Query.limit(25),
     ];
 
-    if (voteStatus) query.push(Query.equal("voteStatus", voteStatus));
+    if (voteStatusParam) query.push(Query.equal("voteStatus", voteStatusParam));
 
     const votes = await databases.listDocuments(db, voteCollection, query);
 
@@ -62,7 +62,7 @@ const Page = async ({
                         question,
                     };
                 }
-            } catch (err) {
+            } catch {
                 // If any referenced document is missing, skip this vote
                 return undefined;
             }
@@ -84,7 +84,7 @@ const Page = async ({
                         <Link
                             href={`/users/${userId}/${userSlug}/votes`}
                             className={`block w-full rounded-full px-3 py-0.5 duration-200 ${
-                                !voteStatus ? "bg-white/20" : "hover:bg-white/20"
+                                !voteStatusParam ? "bg-white/20" : "hover:bg-white/20"
                             }`}
                         >
                             All
@@ -94,7 +94,7 @@ const Page = async ({
                         <Link
                             href={`/users/${userId}/${userSlug}/votes?voteStatus=upvoted`}
                             className={`block w-full rounded-full px-3 py-0.5 duration-200 ${
-                                voteStatus === "upvoted"
+                                voteStatusParam === "upvoted"
                                     ? "bg-white/20"
                                     : "hover:bg-white/20"
                             }`}
@@ -106,7 +106,7 @@ const Page = async ({
                         <Link
                             href={`/users/${userId}/${userSlug}/votes?voteStatus=downvoted`}
                             className={`block w-full rounded-full px-3 py-0.5 duration-200 ${
-                                voteStatus === "downvoted"
+                                voteStatusParam === "downvoted"
                                     ? "bg-white/20"
                                     : "hover:bg-white/20"
                             }`}
@@ -147,14 +147,14 @@ const Page = async ({
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
-                    href={`?page=${Math.max(1, currentPage - 1)}${voteStatus ? `&voteStatus=${voteStatus}` : ''}`}
+                    href={`?page=${Math.max(1, currentPage - 1)}${voteStatusParam ? `&voteStatus=${voteStatusParam}` : ''}`}
                     aria-disabled={currentPage === 1}
                   />
                 </PaginationItem>
                 {Array.from({ length: totalPages }, (_, i) => (
                   <PaginationItem key={i + 1}>
                     <PaginationLink
-                      href={`?page=${i + 1}${voteStatus ? `&voteStatus=${voteStatus}` : ''}`}
+                      href={`?page=${i + 1}${voteStatusParam ? `&voteStatus=${voteStatusParam}` : ''}`}
                       isActive={currentPage === i + 1}
                     >
                       {i + 1}
@@ -163,7 +163,7 @@ const Page = async ({
                 ))}
                 <PaginationItem>
                   <PaginationNext
-                    href={`?page=${Math.min(totalPages, currentPage + 1)}${voteStatus ? `&voteStatus=${voteStatus}` : ''}`}
+                    href={`?page=${Math.min(totalPages, currentPage + 1)}${voteStatusParam ? `&voteStatus=${voteStatusParam}` : ''}`}
                     aria-disabled={currentPage === totalPages}
                   />
                 </PaginationItem>
