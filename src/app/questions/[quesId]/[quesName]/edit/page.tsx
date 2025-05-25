@@ -5,7 +5,7 @@ import EditQues from "./EditQues";
 
 
 const Page = async ({ params }: { params: { quesId: string; quesName: string } }) => {
-    const { quesId } = params;
+    const { quesId } = await params;
     const question = await databases.getDocument(db, questionCollection, quesId);
     return <EditQues question={question} />;
 };
