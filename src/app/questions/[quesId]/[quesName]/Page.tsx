@@ -25,6 +25,7 @@ import React from "react";
 import DeleteQuestion from "./DeleteQuestion";
 import EditQuestion from "./EditQuestion";
 import { TracingBeam } from "@/components/ui/tracing-beam";
+export const dynamic = "force-dynamic";
 
 const page = async ({ params }: { params: Promise<{ quesId: string; quesName: string }> }) => {
     const { quesId } = await params;
