@@ -29,8 +29,17 @@ export const dynamic = "force-dynamic";
 
 const page = async ({ params }: { params: Promise<{ quesId: string; quesName: string }> }) => {
     const { quesId } = await params;
-    const [question, answers, upvotes, downvotes, comments] = await Promise.all([
-        databases.getDocument(db, questionCollection, quesId),
+    let question;
+    try {
+        question = await databases.getDocument(db, questionCollection, quesId);
+    } catch (e) {
+        // If not found, show a user-friendly message or trigger a 404
+        return <div className="text-center text-red-500 py-20 text-xl">Question not found.</div>;
+        // Or, if you want a real 404:
+        // import { notFound } from "next/navigation";
+        // notFound();
+    }
+    const [answers, upvotes, downvotes, comments] = await Promise.all([
         databases.listDocuments(db, answerCollection, [
             Query.orderDesc("$createdAt"),
             Query.equal("questionId", quesId),
